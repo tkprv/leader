@@ -188,59 +188,48 @@ app.get('/integrationproject/:id', (req, res) => {
     )
 });
 
-// app.get('/objectiveproject/:id', (req, res) => {
-//     const ID = req.params.id;
-//     db.query(
-//         "SELECT * FROM tbl_objective WHERE project_id = ?",
-//         [ID],
-//         (err, result) => {
-//             if (err) {
-//                 console.log(err)
-//             } else {
-//                 Object.keys(result).forEach(function (key) {
-//                     var row = result[key];
-//                     res.send(row)
-//                 })
-//             }
-//         }
-//     )
-//     console.log('11',ID)
-// });
+app.get('/objectiveproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query(
+        "SELECT tbl_project.project_id, tbl_objective.objective_id, tbl_objective.objective_name FROM tbl_objective LEFT JOIN tbl_project ON tbl_project.project_id = tbl_objective.project_id WHERE tbl_objective.project_id = ?",
+        [ID],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    )
+});
 
-// app.get('/indicproject/:id', (req, res) => {
-//     const ID = req.params.id;
-//     db.query("SELECT * FROM tbl_indic_project WHERE project_id = ?",
-//         [ID],
-//         (err, result) => {
-//             if (err) {
-//                 console.log(err)
-//             } else {
-//                 Object.keys(result).forEach(function (key) {
-//                     var row = result[key];
-//                     res.send(row)
-//                 })
-//             }
-//         }
-//     )
-// });
+app.get('/indicproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query("SELECT tbl_indic_project.indic_project_id, tbl_indic_project.indic_project, tbl_indic_project.unit, tbl_indic_project.cost, tbl_project.project_id FROM tbl_indic_project LEFT JOIN tbl_project ON tbl_project.project_id = tbl_indic_project.project_id WHERE tbl_indic_project.project_id = ?",
+    [ID],
+    (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.send(result)
+        }
+    }
+    )
+});
 
-// app.get('/stepproject/:id', (req, res) => {
-//     const ID = req.params.id;
-//     db.query("SELECT * FROM tbl_step WHERE project_id = ?",
-//         [ID],
-//         (err, result) => {
-//             if (err) {
-//                 console.log(err)
-//             } else {
-//                 Object.keys(result).forEach(function (key) {
-//                     var row = result[key];
-//                     res.send(row)
-//                 })
-//             }
-//         }
-//     )
-//     console.log('166',ID)
-// });
+app.get('/stepproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query("SELECT tbl_step.step_id, tbl_step.step_name, tbl_step.start, tbl_step.stop, tbl_project.project_id FROM tbl_step LEFT JOIN tbl_project ON tbl_step.project_id = tbl_project.project_id WHERE tbl_step.project_id = ?",
+        [ID],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    )
+});
 
 app.get('/workplanproject/:id', (req, res) => {
     const ID = req.params.id;
@@ -260,40 +249,34 @@ app.get('/workplanproject/:id', (req, res) => {
     )
 });
 
-// app.get('/chargesproject', (req, res) => {
-//     const ID = req.params.id;
-//     db.query("SELECT * FROM tbl_charges WHERE project_id = ?",
-//         [ID],
-//         (err, result) => {
-//             if (err) {
-//                 console.log(err)
-//             } else {
-//                 Object.keys(result).forEach(function (key) {
-//                     var row = result[key];
-//                     res.send(row)
-//                 })
-//             }
-//         }
-//     )
-// });
+app.get('/chargesproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query("SELECT tbl_charges.charges_id, tbl_charges.charges_name_head, tbl_charges.quarter_one, tbl_charges.quarter_two, tbl_charges.quarter_three, tbl_charges.quarter_four, tbl_project.project_id FROM tbl_charges LEFT JOIN tbl_project ON tbl_charges.project_id = tbl_project.project_id WHERE tbl_charges.project_id = ?",
+        [ID],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    )
+});
 
-// app.get('/benefitproject/:id', (req, res) => {
-//     const ID = req.params.id;
-//     db.query(
-//         "SELECT * FROM tbl_benefit WHERE project_id = ?",
-//         [ID],
-//         (err, result) => {
-//             if (err) {
-//                 console.log(err)
-//             } else {
-//                 Object.keys(result).forEach(function (key) {
-//                     var row = result[key];
-//                     res.send(row)
-//                 })
-//             }
-//         }
-//     )
-// });
+app.get('/benefitproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query(
+        "SELECT tbl_benefit.benefit_id, tbl_benefit.benefit_name, tbl_project.project_id FROM tbl_benefit LEFT JOIN tbl_project ON tbl_benefit.project_id = tbl_project.project_id WHERE tbl_benefit.project_id = ?",
+        [ID],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    )
+});
 
 app.put('/confirmleader/:id', (req, res) => {
     console.log(req)
@@ -333,7 +316,7 @@ app.put('/noconfirmleader/:id', (req, res) => {
     console.log('newstatus', status)
 })
 
-app.get('/getcomment', (req, res) => {
+app.get('/showcomment', (req, res) => {
     db.query("SELECT * FROM tbl_comment", (err, result) => {
         if (err) {
             console.log(err);
@@ -362,6 +345,21 @@ app.post('/comment', (req, res) => {
             }
         })
 })
+
+app.get('/commentproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query(
+        "SELECT tbl_comment.comment_id, tbl_comment.comment, tbl_comment.time_comment, tbl_comment.date_comment, tbl_project.project_id, tbl_user.user_id, tbl_user.fname, tbl_user.lname, tbl_user.director, tbl_user.manager, tbl_user.supervisor, tbl_user.supplies, tbl_user.responsible, tbl_user.admin FROM tbl_comment LEFT JOIN tbl_project ON tbl_comment.project_id = tbl_project.project_id LEFT JOIN tbl_user ON tbl_comment.user_id = tbl_user.user_id WHERE tbl_comment.project_id = ?",
+        [ID],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    )
+});
 
 app.listen('3001', () => {
     console.log("Server is running on port 3001");

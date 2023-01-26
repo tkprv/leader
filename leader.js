@@ -9,6 +9,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import axios from 'axios'
 import moment from "moment";
 import { useLocation } from 'react-router-dom';
+import { Tag } from 'primereact/tag';
 
 const Leader = () => {
   const location = useLocation()
@@ -31,19 +32,13 @@ const Leader = () => {
   const [benefitproject, setBenefitproject] = useState([]);
   const [comment, setComment] = useState('');
   const [labelcomment, setLabelcomment] = useState([]);
+  const [commentproject, setCommentproject] = useState([]);
   const [id, setId] = useState("")
   const [displayBasic, setDisplayBasic] = useState(false)
   const [times1, setTimes1] = useState()
   const [dates1, setDates1] = useState()
 
   console.log('44', location.state)
-
-  const dialogFuncMap = {
-    'displayBasic': setDisplayBasic,
-    'confirm': setConfirm,
-    'noconfirm': setNoconfirm
-  }
-
   useEffect(() => {
     getfiscalyear()
     getsection()
@@ -59,7 +54,14 @@ const Leader = () => {
     getworkplan()
     getcharges()
     getbenefit()
+    getcomment()
   }, []);
+
+  const dialogFuncMap = {
+    'displayBasic': setDisplayBasic,
+    'confirm': setConfirm,
+    'noconfirm': setNoconfirm
+  }
 
   const onClick = (name, position) => {
     dialogFuncMap[`${name}`](true);
@@ -78,6 +80,23 @@ const Leader = () => {
     setId(id)
 
   }
+  
+  const workposition = (node) => {
+    if(node.director === 1) {
+      return 'ผู้บริหาร'
+    } else if(node.manager === 1){
+      return 'เจ้าหน้าที่ฝ่ายแผน'
+    } else if(node.supervisor === 1){
+      return 'หัวหน้าฝ่าย'
+    } else if(node.supplies === 1){
+      return 'เจ้าหน้าที่พัสดุ'
+    } else if(node.responsible === 1){
+      return 'ผู้รับผิดชอบโครงการ'
+    } else if(node.admin === 1){
+      return 'ผู้ดูแลระบบ'
+    } 
+  }
+
   const renderFooter1 = (name) => {
     return (
       <div>
@@ -209,7 +228,7 @@ const Leader = () => {
         console.log(error)
       });
   }
-  console.log('88', objectiveproject?.objective_name)
+  console.log('88', objectiveproject)
 
  
   const getindic = () => {
@@ -222,7 +241,7 @@ const Leader = () => {
       console.log(error)
     });
   }
-  console.log('99', indicproject?.indicproject)
+  console.log('99', indicproject)
 
   const getstep = () => {
     axios
@@ -296,9 +315,9 @@ const Leader = () => {
     alert(`ไม่อนุมัติ id${id} sucessful`)
   }
 
-  const getcomment = () => {
+  const showcomment = () => {
     axios
-      .get("http://localhost:3001/getcomment", {})
+      .get("http://localhost:3001/showcomment", {})
       .then((res) => {
         setLabelcomment(res.data);
       }).catch((error) => {
@@ -319,6 +338,18 @@ const Leader = () => {
         comment_type: 1
       })
   }
+
+  const getcomment = async () => {
+    await axios
+      .get(`http://localhost:3001/commentproject/${location.state.project_id}`)
+      .then((res) => {
+        console.log(res.data.data)
+        setCommentproject(res.data)
+      }).catch((error) => {
+        console.log(error)
+      });
+  }
+  console.log('66', commentproject)
 
   return (
     <div className="tabview-demo">
@@ -343,19 +374,21 @@ const Leader = () => {
               <h5 style={{ marginTop: '1.5em' }}>หลักการและเหตุผล : </h5>
               <InputTextarea value={location.state.rationale} style={{ marginLeft: '12.5em' }} rows={8} cols={80} />
             </p>
-            <p><h5 style={{ marginTop: '1.5em' }}>วัตถุประสงค์ : {objectiveproject?.objective_name}</h5></p>
+            {objectiveproject.map((value, index) => {
+             return <p><h5 style={{ marginTop: '1.5em' }}>วัตถุประสงค์ : {value?.objective_name}</h5></p>
+            })}
             <p>
               <h5 style={{ marginTop: '1.5em' }}>ตัวชี้วัดความสำเร็จระดับโครงการ</h5>
-              <DataTable value={location.state.stepproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
-                <Column field="indicproject?.indic_project" header="ตัวชี้วัดความสำเร็จ" />
-                <Column field="indicproject?.unit" header="หน่วยนับ" />
-                <Column field="indicproject?.cost" header="ค่าเป้าหมาย" />
+              <DataTable value={indicproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
+                <Column field="indic_project" header="ตัวชี้วัดความสำเร็จ" />
+                <Column field="unit" header="หน่วยนับ" />
+                <Column field="cost" header="ค่าเป้าหมาย" />
               </DataTable>
             </p>
             <p><h5 style={{ marginTop: '1.5em' }}>กลุ่มเป้าหมาย : {location.state.target_group}</h5></p>
             <p>
               <h5 style={{ marginTop: '1.5em' }}>ขั้นตอนการดำเนินการ</h5>
-              <DataTable value={location.state.stepproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
+              <DataTable value={stepproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
                 <Column field="step_name" header="ขั้นตอนการดำเนินการ/รายการกิจกรรม" />
                 <Column field="start" header="เริ่มต้น" />
                 <Column field="stop" header="สิ้นสุด" />
@@ -365,17 +398,19 @@ const Leader = () => {
             <p><h5 style={{ marginTop: '1.5em' }}>ปริมาณการงบประมาณที่ใช้ : {location.state.butget} บาท</h5></p>
             <p><h5 style={{ marginTop: '1.5em' }} >แผนงาน : {workplanproject?.workplan_name}</h5></p>
             <p>
-              <h5 style={{ marginTop: '1.5em' }}>ประเภทการใช้จ่าย : </h5>
-              <DataTable value={location.state.chargesproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
+              <h5 style={{ marginTop: '1.5em' }}>ประเภทการใช้จ่าย</h5>
+              <DataTable value={chargesproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
                 <Column field="charges_name_head" header="ประเภทค่าใช้จ่าย" />
-                <Column field="quarter_one" header="แผ่นการใช้จ่านใตรมาส 1" />
-                <Column field="quarter_two" header="แผ่นการใช้จ่านใตรมาส 2" />
-                <Column field="quarter_three" header="แผ่นการใช้จ่านใตรมาส 3" />
-                <Column field="quarter_four" header="แผ่นการใช้จ่านใตรมาส 4" />
+                <Column field="quarter_one" header="แผ่นการใช้จ่ายไตรมาส 1" />
+                <Column field="quarter_two" header="แผ่นการใช้จ่ายไตรมาส 2" />
+                <Column field="quarter_three" header="แผ่นการใช้จ่ายไตรมาส 3" />
+                <Column field="quarter_four" header="แผ่นการใช้จ่ายไตรมาส 4" />
               </DataTable>
             </p>
-            <p><h5 style={{ marginTop: '1.5em' }}>ประโยชน์ที่คาดว่าจะได้รับ : {benefitproject?.benefit_name}</h5></p>
-            <p><h5 style={{ marginTop: '1.5em' }}>เอกสาร TOR : </h5></p>
+            {benefitproject.map((value) => {
+              return <p><h5 style={{ marginTop: '1.5em' }}>ประโยชน์ที่คาดว่าจะได้รับ : {value?.benefit_name}</h5></p>
+            })}
+            <p><h5 style={{ marginTop: '1.5em' }}>เอกสาร TOR : {location.state.tor}</h5></p>
           </TabPanel>
           <TabPanel header="พิจารณาโครงการ">
             <p><h5>
@@ -395,7 +430,13 @@ const Leader = () => {
             </p>
           </TabPanel>
           <TabPanel header="ความคิดเห็น">
-            <p><h5 style={{ marginTop: '1em' }}>ความคิดเห็น : </h5></p>
+          <DataTable value={commentproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
+                <Column field="comment" header="ความคิดเห็น" />
+                <Column field="fname" header="โดย" />
+                <Column body={workposition} header="ตำแหน่ง" />
+                <Column field="date_comment" header="วันที่แสดงความคิดเห็น" />
+                <Column field="time_comment" header="เวลาที่แสดงความคิดเห็น" />
+              </DataTable>
           </TabPanel>
         </TabView>
       </div>

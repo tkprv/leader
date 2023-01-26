@@ -52,7 +52,7 @@ const Dataleader = () => {
     if(node.sent_tor === null || node.sent_tor === 0){
       return <Tag className="mr-2" severity="danger" value="ยังไม่มีเอกสาร" rounded></Tag>
     } else{
-      return node.sent_tor
+      return <Button type="button" icon="pi pi-file" className="p-button-rounded p-button-success"/>
     }
   }
 
@@ -137,11 +137,12 @@ const Dataleader = () => {
         <Row>
           <Col xs='3'>
             <h4>ปีงบประมาณ</h4>
-            <Dropdown value={selectedfiscalyear} options={fiscalyear} style={{ width: '10em' }} onChange={onsetFiscalyear} optionLabel="fiscalyear" placeholder="-เลือก-" />
+            <Dropdown value={selectedfiscalyear} options={fiscalyear} style={{ width: '10em' }} onChange={onsetFiscalyear} optionLabel="fiscalyear" placeholder="ทุกปี" />
           </Col>
           <Col xs='9'>
             <h4>สถานะ</h4>
-            <Dropdown value={value2} style={{ width: '30em' }} onChange={(e) => setValue2(e.target.value)} placeholder="-เลือก-" />
+            <Dropdown value={value2} style={{ width: '30em' }} onChange={(e) => setValue2(e.target.value)} placeholder="ทุกสถานะ" />
+            <Button label="ค้นหา" className="p-button-success" style={{marginLeft: '.5em'}}/>
           </Col>
         </Row>
       </div>
