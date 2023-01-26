@@ -31,7 +31,7 @@ const Dataleader = () => {
   }
 
   const Status = (node) => {
-    if(node.status === 0 || node.state == null){
+    if(node.status === 0){
       return <Tag className="mr-2" severity="warning" value="รอหัวหน้าฝ่ายพิจารณา" rounded></Tag>
     } else if(node.status === 1){
       return <Tag className="mr-2" severity="info" value="รอเจ้าหน้าที่ฝ่ายแผนตรวจสอบ" rounded></Tag>
