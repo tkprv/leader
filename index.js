@@ -78,43 +78,20 @@ app.get('/sectionproject/:id', (req, res) => {
     )
 })
 
-// app.get('/userproject/:id', (req, res) => {
-//     // db.query("SELECT * FROM tbl_project LEFT JOIN tbl_user_project ON tbl_project.project_id = tbl_user_project.project_id", (err, result) => {
-//     //     if (err) {
-//     //         console.log(err);
-//     //     } else {
-//     //         res.send(result);
-//     //     }                   
-//     console.log(req.params);
-//     const id = req.params.id;
-//     db.query("SELECT * FROM tbl_user_project WHERE project_id = ?",
-//         [id],
-//         (err, result) => {
-//             if (err) {
-//                 console.log(err);
-//             } else {                              
-//                 // res.send(result);
-//                 Object.keys(result).forEach(function (key) {
-//                     console.log('kkkk',key);
-//                     var row = result[key]
-//                     //res.send(row)
-//                     //console.log('test', row.user_id)
-//                     db.query("SELECT * FROM tbl_user WHERE user_id = ?", [row.user_id], (err, result) => {
-//                         if (err) {
-//                             console.log(err);
-//                         } else {
-//                             Object.keys(result).forEach(function (key) {
-//                                 var data = result[key]
-//                                 //console.log('user',data);
-//                                 res.send(data)
-//                             })
-//                         }
-//                     })
-//                 })
-
-//             }
-//         });
-// });
+app.get('/userproject/:id', (req, res) => {
+    const ID = req.params.id;
+    db.query(
+        "SELECT tbl_user_project.user_project_id, tbl_project.project_id, tbl_user.user_id, tbl_user.fname, tbl_user.lname FROM tbl_user_project LEFT JOIN tbl_project ON tbl_user_project.project_id = tbl_project.project_id LEFT JOIN tbl_user ON tbl_user_project.user_id = tbl_user.user_id WHERE tbl_user_project.project_id = ?",
+        [ID],
+        (err, result) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(result)
+            }
+        }
+    )
+});
 
 app.get('/strategicproject/:id', (req, res) => {
     const ID = req.params.id;

@@ -156,7 +156,7 @@ const Leader = () => {
         console.log(error)
       });
   }
-  console.log('22', userproject.fname)
+  console.log('22', userproject)
 
   const getplanname = async () => {
     await axios
@@ -359,7 +359,9 @@ const Leader = () => {
             <p><h5 style={{ marginTop: '1em' }}>ปีงบประมาณ : {fiscalyear?.fiscalyear}</h5></p>
             <p><h5 style={{ marginTop: '1.5em' }}>ชื่อโครงการ : {location.state.project_name}</h5></p>
            {sectionproject !== undefined ? <p><h5 style={{ marginTop: '1.5em' }}>หน่วยงานที่รับผิดชอบโครงการ : {sectionproject?.section_name}</h5></p>: <h5>ไม่มีหน่วยงานที่รับผิดชอบ</h5>}
-            <p><h5 style={{ marginTop: '1.5em' }}>ผู้รับผิดชอบโครงการ : {userproject.fname +'  '+ userproject.lname}</h5></p>
+           {userproject.map((value) => {
+            return <p><h5 style={{ marginTop: '1.5em' }}>ผู้รับผิดชอบโครงการ : {value?.fname+' '+value?.lname}</h5></p>
+           })}
             <p><h5 style={{ marginTop: '1.5em' }}>ชื่อแผนยุทธ์ศาสตร์ : {plannameproject?.plan_name}</h5></p>
             <p><h5 style={{ marginTop: '1.5em', marginLeft: '8.5em' }}>ประเด็นยุทธ์ศาสตร์ : {strategicproject?.strategic_name}</h5></p>
             <p><h5 style={{ marginTop: '1.5em', marginLeft: '8.5em' }}>เป้าประสงค์ : {goalproject?.goal_name}</h5></p>
@@ -374,7 +376,7 @@ const Leader = () => {
               <h5 style={{ marginTop: '1.5em' }}>หลักการและเหตุผล : </h5>
               <InputTextarea value={location.state.rationale} style={{ marginLeft: '12.5em' }} rows={8} cols={80} />
             </p>
-            {objectiveproject.map((value, index) => {
+            {objectiveproject.map((value) => {
              return <p><h5 style={{ marginTop: '1.5em' }}>วัตถุประสงค์ : {value?.objective_name}</h5></p>
             })}
             <p>
