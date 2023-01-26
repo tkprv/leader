@@ -420,8 +420,8 @@ const Leader = () => {
               <Button label="อนุมัติ" icon="pi pi-check" className="p-button-success" style={{ marginRight: '.6em', marginLeft: '.5em', width: '8%' }} onClick={() => onClick('confirm')} />
               <Dialog header="แน่ใจหรือไม่?" visible={confirm} onHide={() => onHide('confirm')} breakpoints={{ '950x': '75vw' }} style={{ width: '40vw' }} footer={renderFooter1('confirm')}>
                 <div className="field" style={{'textAlign': 'center'}}>
-                  <i className="pi pi-exclamation-circle p-button-warning" style={{ 'fontSize': '8em'}}></i>
-                  <p style={{marginTop:30}}>คุณต้องการอนุมัติโครงการนี้ไปยังเจ้าหน้าที่ฝ่ายแผน</p>
+                  <i className="pi pi-exclamation-circle p-button-warning" style={{ 'fontSize': '8em', 'color': 'orange'}}></i>
+                  <p style={{marginTop:25}}><h5>คุณต้องการอนุมัติโครงการนี้ไปยังเจ้าหน้าที่ฝ่ายแผน</h5></p>
                 </div>
               </Dialog>
               <Button label="ไม่อนุมัติ" icon="pi pi-times" className="p-button-danger" onClick={() => onClick('noconfirm')} />
@@ -434,7 +434,8 @@ const Leader = () => {
           <TabPanel header="ความคิดเห็น">
           <DataTable value={commentproject} columnResizeMode="fit" showGridlines responsiveLayout="scroll" rows={10}>
                 <Column field="comment" header="ความคิดเห็น" />
-                <Column field="fname" header="โดย" />
+                <Column field="fname" header="ชื่อ" />
+                <Column field="lname" header="นามสกุล" />
                 <Column body={workposition} header="ตำแหน่ง" />
                 <Column field="date_comment" header="วันที่แสดงความคิดเห็น" />
                 <Column field="time_comment" header="เวลาที่แสดงความคิดเห็น" />
